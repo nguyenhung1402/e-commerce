@@ -1,0 +1,43 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Dang nhap nguoi dung{% endblock %}
+
+{% block content %}
+
+<h1 class="text-center text-danger">DANG KY NGUOI DUNG </h1>
+{% if error %}
+<div class="alert alert-danger">
+    <h4>{{error}}</h4>
+</div>
+
+{% endif %}
+
+<form method="post" action="{{url_for('user_sigin')}}" >
+    <div class="form-group">
+        <label for="name">Ho ten</label>
+        <input type="text" class="form-control" id="name" name="name"/>
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="email"/>
+    </div>
+    <div class="form-group">
+        <label for="username">Tai khoan</label>
+        <input type="text" class="form-control" id="username" name="username"/>
+    </div>
+    <div class="form-group">
+        <label for="password">Mat Khau</label>
+        <input type="password" class="form-control" id="password" name="password"/>
+    </div>
+    <div class="form-group">
+        <label for="confirm">Xac thuc map khau</label>
+        <input type="password" class="form-control" id="confirm" name="confirm"/>
+    </div>
+    <div class="form-group">
+        <label for="avatar">Anh dai dien</label>
+        <input type="file" class="form-control" id="avatar" name="avatar"/>
+    </div>
+    <input type="submit" value="Dang ky"  class="btn btn-danger"  />
+</form>
+<br>
+{% endblock %}

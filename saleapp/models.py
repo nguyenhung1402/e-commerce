@@ -1,4 +1,4 @@
-from  sqlalchemy import Column, Integer, String,ForeignKey, Boolean, Date, DateTime,Enum
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Date, DateTime, Enum, Float
 from sqlalchemy.orm import relationship
 from saleapp import db
 from datetime import datetime
@@ -35,7 +35,7 @@ class product(BaseModel):
     created_date = Column(DateTime, default=datetime.now())
     #'' thi phai la ten cua bang du lieu tablename con khong thi ten class
     category_id = Column(Integer,ForeignKey(category.id),nullable=True,default=1 )
-
+    receipts_details = relationship('ReceiptDetails',backref='prodcut',lazy=True)
 
     def __str__(self):
         return self.name
@@ -54,12 +54,22 @@ class User(BaseModel,UserMixin):
     active = Column(Boolean, default=True)
     joined_date = Column(DateTime, default=datetime.now())
     user_role = Column(Enum(UserRole),default=UserRole.USER)
+    receipts = relationship('Receipt',backref='user',lazy=True)
 
     def __str__(self):
         return self.name
 
 
+class Receipt(BaseModel):
+    created_date = Column(DateTime, default=datetime.now())
+    user_id = Column(Integer,ForeignKey(User.id),nullable=False)
+    datails = relationship('ReceiptDetails',backref='receipt',lazy=True)
 
+class ReceiptDetails(db.Model):
+    receipt_id = Column(Integer,ForeignKey('receipt.id'),nullable=False,primary_key=True)
+    product_id = Column(Integer,ForeignKey('product.id'),nullable=False,primary_key=True)
+    quantity = Column(Integer,default=0)
+    unit_price = Column(Float,default=0)
 
 if __name__ == '__main__':
      with app.app_context():

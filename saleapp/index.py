@@ -1,10 +1,11 @@
 import math
 
-from flask import render_template,request,redirect,url_for
+from flask import render_template, request, redirect, url_for, session,jsonify
 from saleapp import  app,login
 import utils
 import cloudinary.uploader
-from flask_login import login_user,logout_user
+from flask_login import login_user,logout_user, login_required
+from  saleapp.models import UserRole
 @app.route('/')
 def home():
 
@@ -20,7 +21,7 @@ def home():
 @app.route('/products')
 def product_list():
     products = utils.load_product()
-
+    print(products)
     cate_id = request.args.get('category_id')
     kw = request.args.get('keyword')
     from_price = request.args.get('from_price')
@@ -65,29 +66,55 @@ def user_register():
 
     return render_template('register.html',error=error)
 
+
+#cho moi trang deu duoc co thong tin de cho thang header
 @app.context_processor
 def common_response():
     return{
         'categories': utils.load_categories(),
+        'cart_start': utils.count_cart(session.get('cart'))
     }
 
 @app.route('/login',methods=['GET','POST'])
 def user_sigin():
     err=''
-    if request.method == 'POST':
+    try:
+        if request.method == 'POST':
+            username = request.form.get('username')
+            password = request.form.get('password')
+
+            user = utils.check_login(username=username,password=password)
+
+            if user:
+                login_user(user=user)
+                next = request.args.get('next','home')
+
+                return redirect(url_for(next))
+
+            else:
+                err='Tai khoan hoac mat khau khong dung'
+    except Exception as e:
+        err='He thong dang co loi '+str(e)
+
+    return render_template('login.html',error=err)
+
+@app.route('/admin-login',methods=['POST'])
+def admin_sigin():
+    err=''
+    try:
         username = request.form.get('username')
         password = request.form.get('password')
 
-        user = utils.check_login(username=username,password=password)
+        user = utils.check_login(username=username,password=password, role=UserRole.ADMIN)
 
         if user:
             login_user(user=user)
-            return redirect(url_for('home'))
+    except Exception as e:
+        err = 'He thong dang co loi '+str(e)
+    print(err)
+    return redirect('/admin')
 
-        else:
-            err='Tai khoan hoac mat khau khong dung'
 
-    return render_template('login.html',error=err)
 
 @login.user_loader
 def user_load(user_id):
@@ -98,6 +125,70 @@ def user_load(user_id):
 def user_signout():
     logout_user()
     return redirect(url_for('user_sigin'))
+@app.route('/api/add-cart',methods=['POST'])
+def add_to_cart():
+    data = request.json
+    id = str(data.get('id'))
+    name = str(data.get('name'))
+    price = str(data.get('price'))
+
+    cart = session.get('cart')
+    print(session)
+    if not cart:
+        cart = {}
+
+    if id in cart:
+        cart[id]['quantity'] += 1
+    else:
+        cart[id] = {
+            'id' : id,
+            'name' : name,
+            'price' : price,
+            'quantity' : 1,
+        }
+
+    session['cart'] = cart
+
+    return jsonify(utils.count_cart(cart))
+
+
+@app.route('/api/update-cart',methods=['PUT'])
+def update_cart():
+    data = request.json
+
+    id = str(data.get('id'))
+    quantity = int(data.get('quantity'))
+    cart = session.get('cart')
+
+    if cart and id in cart:
+        cart[id]['quantity'] = quantity
+        session['cart'] = cart
+
+    return jsonify(utils.count_cart(cart))
+
+@app.route('/api/delete-cart/<product_id>',methods=['DELETE'])
+def delete_cart(product_id):
+    cart = session.get('cart')
+    if cart and product_id in cart:
+        del cart[product_id]
+        session['cart'] = cart
+
+    return jsonify(utils.count_cart(cart))
+
+@app.route('/cart')
+def cart():
+    return render_template('cart.html',starts = utils.count_cart(session.get('cart')))
+
+@app.route('/api/pay',methods=['POST'])
+@login_required
+def pay():
+    try:
+        utils.add_reipt(session.get('cart'))
+        del session['cart']
+    except:
+        return jsonify({'code': 400})
+
+    return jsonify({'code': 200})
 
 if __name__ == '__main__':
     from saleapp.admin import *

@@ -1,0 +1,173 @@
+{% extends 'admin/base.html' %}
+
+{% block body %}
+{% if current_user.is_authenticated%}
+
+<h1>THONG KE DOANH THU  </h1>
+
+
+<div class="row">
+    <div class="col-md-6 col-xs-12">
+
+        <table class="table">
+            <tr>
+                <th>Ma danh muc</th>
+                <th>Ten danh muc</th>
+                <th>Tong so tien</th>
+            </tr>
+            {% for s in stats %}
+            <tr>
+                <td>{{s[0]}}</td>
+                <td>{{s[1]}}</td>
+                <td>{{s[2]}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-6 col-xs-12">
+        <form>
+            <div class="form-group">
+                <input type="text" class="form-control" name="kw" placeholder="Nhap tu khoa...">
+            </div>
+            <div class="form-group">
+                <input type="date" class="form-control" name="from_date" placeholder="Tu ngay">
+            </div>
+            <div class="form-group">
+                <input type="date" class="form-control" name="to_date" placeholder="Den ngay" >
+            </div>
+            <input type="submit" value="Thong ke" class="btn btn-info">
+
+        </form>
+        <canvas id="myCatagoryChart"></canvas>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-6 col-xs-12">
+        <table class="table">
+            <tr>
+                <th>Thang</th>
+                <th>Doanh thu</th>
+            </tr>
+            {% for s in month_stats %}
+            <tr>
+                <td>{{s[0]}}</td>
+                <td>{{ "{:,.0f}".format(s[1]) }} VND</td>
+
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-6 col-xs-12">
+        <form>
+            <div class="form-group">
+                <input type="number" min="2000" name="year" class="form-control" placeholder="Nhap nam"/>
+            </div>
+            <input type="submit" value="Thong ke" class="btn btn-danger"  />
+        </form>
+        <canvas id="productMonth"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let lables = [], info = []
+    let color = [] , borderColor = []
+    let r,g,b;
+    {% for s in stats %}
+    lables.push('{{s[1]}}')
+    info.push('{{s[2]}}')
+    r = Math.random()*255
+    g = Math.random()*255
+    b = Math.random()*255
+
+
+    color.push(`rgba( ${r}, ${g}, ${b}, 0.2)`)
+    borderColor.push(`rgba( ${r}, ${g}, ${b}, 1)`)
+    {% endfor %}
+    console.log(color)
+
+
+    let lables_1 = [], info_1 = []
+    let color_1 = [] , borderColor_1 = []
+    let r_1,g_1,b_1;
+    {% for s_1 in month_stats %}
+    lables_1.push('{{s_1[0]}}')
+    info_1.push('{{s_1[1]}}')
+    r_1 = Math.random()*255
+    g_1 = Math.random()*255
+    b_1 = Math.random()*255
+
+
+    color_1.push(`rgba( ${r_1}, ${g_1}, ${b_1}, 0.2)`)
+    borderColor_1.push(`rgba( ${r_1}, ${g_1}, ${b_1}, 1)`)
+    {% endfor %}
+    window.onload = function (){
+        const ctx = document.getElementById('myCatagoryChart').getContext('2d')
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: lables,
+                datasets: [{
+                    label: 'Thong ke doanh thu theo san pham',
+                    data: info,
+                    backgroundColor: color,
+                    borderColor: borderColor,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+
+        const ctx_1 = document.getElementById('productMonth').getContext('2d')
+        const myChart_1 = new Chart(ctx_1, {
+            type: 'line',
+            data: {
+                labels: lables_1,
+                datasets: [{
+                    label: 'Thong ke doanh thu theo san pham',
+                    data: info_1,
+                    backgroundColor: color_1,
+                    borderColor: borderColor_1,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+
+    }
+
+    console.log('Bang 1')
+
+</script>
+
+
+
+
+
+{% endif %}
+
+
+
+
+{% endblock %}
+
+
+
+
+

@@ -27,7 +27,7 @@
                     {% if current_user.avatar %}
                     <img src="{{current_user.avatar}}" class="rounded-circle" alt="{{current_user.name}}" style="width:40px;"/>
                     {% else %}
-                    <img src="{{url_for('static',filename='images/img.png')}}" alt="Logo" />
+                    <img src="{{url_for('static',filename='images/img.png')}}" alt="{{current_user.name}}" style="width:40px;"/>
                     {% endif %}
                     {{current_user.name}}
                 </a>
@@ -43,7 +43,11 @@
                 <a class="nav-link text-success" href="{{ url_for('user_sigin')}}">Dang nhap</a>
             </li>
             {% endif %}
-
+            <li class="nav-item" >
+                <a class="nav-link text-success" href="{{ url_for('cart')}}">
+                    Gio Hang <span class="badge badge-info cart-counter"  > {{cart_start.total_quantity}} </span>
+                </a>
+            </li>
         </ul>
     </div>
 

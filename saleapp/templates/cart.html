@@ -1,0 +1,61 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Trang chu {% endblock %}
+
+{% block content %}
+
+<h1 class="text-center text-danger">GIO HANG</h1>
+
+{% if 'cart' in session and session['cart'] %}
+<table class="table">
+    <tr>
+        <th>Ma san pham </th>
+        <th>Ten san pham </th>
+        <th>Don gia</th>
+        <th>So luong</th>
+        <th></th>
+
+    </tr>
+    {% for c in session['cart'].values() %}
+    <tr id="product{{c.id}}">
+        <td>{{c.id}}</td>
+        <td>{{c.name}}</td>
+        <td>{{c.price}}</td>
+        <td>
+            <div class="form-group">
+            <input type="number" min="1" value="{{c.quantity}}" class="form-control"
+            onblur="updateCart({{c.id}},this)"
+            />
+
+            </div>
+        </td>
+        <td>
+            <input type="button"
+                   value="Xoa"
+                   class="btn btn-danger"
+                   onclick="deleteCart({{c.id}})"
+            />
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="alert alert-info">
+    <h5>Tong san pham: <span class="cart-counter">{{starts.total_quantity}}</span></h5>
+    <h5>Tong tien:<span id="total-amount">{{"{:,.0f}".format(starts.total_amount)}}</span></h5>
+
+</div>
+{% if current_user.is_authenticated %}
+<input type="button" value="Thanh toan" class="btn btn-success" onclick="pay()"/>
+{% else %}
+<a href="{{url_for('user_sigin',next='cart')}}">Dang nhap de thanh toan...</a>
+{% endif %}
+
+<br><br>
+
+{% else %}
+<p><i>Khong co san pham nao duoc chon</i></p>
+
+{% endif %}
+
+{% endblock %}

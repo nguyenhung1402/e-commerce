@@ -1,6 +1,6 @@
 import json,os
 from saleapp import app,db
-from saleapp.models import category,product,User,Receipt,ReceiptDetails,UserRole
+from saleapp.models import category,product,User,Receipt,ReceiptDetails,UserRole,Comment
 import hashlib
 from flask_login import current_user
 from sqlalchemy import func
@@ -146,3 +146,12 @@ def product_stats(kw = None , from_date = None,to_date = None):
 def product_month_stats(year):
     with app.app_context():
         return db.session.query(extract('month',Receipt.created_date),func.sum(ReceiptDetails.quantity*ReceiptDetails.unit_price)).join(ReceiptDetails,ReceiptDetails.receipt_id.__eq__(Receipt.id)).filter(extract('year',Receipt.created_date) == year).group_by(extract('month',Receipt.created_date)).order_by(extract('month',Receipt.created_date)).all()
+
+
+def add_comment(content, product_id):
+    with app.app_context():
+        comment = Comment(content=content,product_id=product_id,user_id=current_user.id)
+        db.session.add(comment)
+        db.session.commit()
+        print(comment)
+        return comment

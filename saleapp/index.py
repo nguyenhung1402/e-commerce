@@ -44,18 +44,22 @@ def user_register():
     error = ""
     if request.method == 'POST':
         name = request.form.get('name')
-        print(request.form)
+        # print(request.form)
         username = request.form.get('username')
         password = request.form.get('password')
         email = request.form.get('email')
         confirm = request.form.get('confirm')
         avatar_path = None
         try:
-            if password.strip()==(confirm.strip()):
+            if password.strip().__eq__(confirm.strip()):
                 avatar = request.files.get('avatar')
+                # print(avatar)
                 if avatar:
                     res = cloudinary.uploader.upload(avatar)
+                    # print(res)
                     avatar_path = res['secure_url']
+                    # print(avatar_path)
+
                 utils.add_user(name=name,username=username,password=password,email=email,avatar=avatar_path)
                 return redirect(url_for('home'))
             else:
@@ -189,6 +193,34 @@ def pay():
         return jsonify({'code': 400})
 
     return jsonify({'code': 200})
+
+@app.route('/api/comments',methods=['POST'])
+@login_required
+def add_comment():
+    data = request.json
+    content = data.get('content')
+    product_id = str(data.get('product_id'))
+
+    try:
+        c = utils.add_comment(content=content, product_id=product_id)
+        print('a')
+    except:
+        print('b')
+        return {'status': 404, 'err_msg': 'Bi loi!!'}
+
+    print('c')
+    print(c)
+    return {'status': 201, 'comment': {
+        'content': c.content,
+        'id': c.id,
+        'created_date': c.created_date,
+        'user': {
+            'username': current_user.username,
+            'avatar': current_user.avatar
+
+        }
+    }}
+
 
 if __name__ == '__main__':
     from saleapp.admin import *

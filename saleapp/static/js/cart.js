@@ -110,7 +110,7 @@ function addComment(productId){
             
                     <div class="col-md-11 col-xs-8">
                         <p>${c.content}</p>
-                        <p><em>${c.created_date}</em></p>
+                        <p><em>${moment(c.create_date).locale('vi').fromNow()}</em></p>
                     </div>
                 </div>
                 ` + area.innerHTML

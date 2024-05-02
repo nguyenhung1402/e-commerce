@@ -155,3 +155,14 @@ def add_comment(content, product_id):
         db.session.commit()
         print(comment)
         return comment
+
+def get_comments(product_id,page=1):
+    with app.app_context():
+        page_size = app.config.get('COMMENT_SIZE')
+        start = (page - 1) * page_size
+
+        return db.session.query(Comment).filter(Comment.product_id.__eq__(product_id)).order_by(-Comment.id).slice(start,start+page_size).all()
+
+def count_comments(product_id):
+    with app.app_context():
+        return db.session.query(Comment).filter(Comment.product_id.__eq__(product_id)).count()

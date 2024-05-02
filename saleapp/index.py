@@ -35,8 +35,12 @@ def product_list():
 @app.route('/products/<int:product_id>')
 def product_detail(product_id):
     product = utils.get_product_by_id(product_id)
+    comments = utils.get_comments(product_id=product_id,page= int(request.args.get('page',1)))
 
-    return  render_template('product_detail.html',product=product)
+    return  render_template('product_detail.html',
+                            comments=comments,
+                            product=product,
+                            pages = math.ceil(utils.count_comments(product_id=product_id)/app.config['COMMENT_SIZE']))
 
 @app.route('/register',methods=['GET','POST'])
 def user_register():

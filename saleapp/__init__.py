@@ -8,7 +8,7 @@ app.secret_key = '827&&&&#*@&**((8@@!'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:hungqazsdf123@localhost/labsaledb?charset=utf8mb4'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['PAGE_SIZE'] = 12
-
+app.config['COMMENT_SIZE'] = 5
 db = SQLAlchemy(app=app)
 
 

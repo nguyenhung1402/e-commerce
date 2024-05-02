@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Date, DateTime, Enum, Float
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship,joinedload
 from saleapp import db
 from datetime import datetime
 from saleapp import  app
@@ -55,7 +55,7 @@ class User(BaseModel,UserMixin):
     joined_date = Column(DateTime, default=datetime.now())
     user_role = Column(Enum(UserRole),default=UserRole.USER)
     receipts = relationship('Receipt',backref='user',lazy=True)
-    comments = relationship('Comment',backref='user',lazy=True)
+    user_comments = relationship('Comment',backref='comment_user_backref',lazy= True)
     def __str__(self):
         return self.name
 
@@ -76,7 +76,7 @@ class Comment(BaseModel):
     product_id = Column(Integer,ForeignKey('product.id'),nullable=False)
     user_id = Column(Integer,ForeignKey(User.id),nullable=False)
     created_date = Column(DateTime, default=datetime.now())
-
+    comment_user = relationship("User", backref='user_comments_backref', lazy='joined')
     def __str__(self):
         return self.content
 

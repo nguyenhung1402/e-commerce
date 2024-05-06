@@ -10,6 +10,7 @@ body{
 
 h1.subject{
     text-align: center;
+    color: darkorchid;
 }
 
 table.product{
@@ -26,3 +27,30 @@ table.product{
     display: flex;
 }
 
+.large-image {
+    width: 80%;
+    height: auto;
+}
+
+
+.product-details h2 {
+    color: #343a40;
+    font-size: 2em;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.product-details p {
+    color: #6c757d;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.product-details h4 {
+    color: #dc3545;
+    font-size: 1.5em;
+    margin-top: 20px;
+    text-align: right;
+}

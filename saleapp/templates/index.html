@@ -3,7 +3,7 @@
 {% block title %}Trang chu {% endblock %}
 
 {% block content %}
-<h1 class="subject">Chao mung den WEB</h1>
+<h1 class="subject">Chào {{current_user.name}} đến với cửa hàng!!!</h1>
 {% if pages >1 %}
 <ul class="pagination">
     {% for idx in range (1, pages +1) %}
@@ -19,7 +19,7 @@
             <img class="card-img-top" src="{{p.image}}" alt="{{p.name}}">
             <div class="card-body">
                 <h4 class="card-title">{{p.name}}</h4>
-                <p class="card-text">{{"{:,.1f}".format(p.price)}} VND</p>
+                <p class="card-text">{{"{:,.0f}".format(p.price)}} VND</p>
                 <a href="#" class="btn btn-primary"
                    onclick="addToCart({{p.id}},'{{p.name}}',{{p.price}})">Dat hang</a>
                 <a href="{{url_for('product_detail',product_id=p.id)}}" class="btn btn-info">Xem chi tiet</a>

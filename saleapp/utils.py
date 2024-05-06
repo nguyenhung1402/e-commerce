@@ -13,19 +13,7 @@ def load_categories():
     return category.query.all()
 
 def load_product(cate_id=None,kw=None,from_price=None,to_price=None,page=1):
-    # products = read_json(os.path.join(app.root_path,'data/products.json'))
-    #
-    # if cate_id:
-    #     products = [p for p in products if p['category_id'] == int(cate_id)]
-    #
-    # if kw:
-    #     products = [p for p in products if p['name'].lower().find(kw.lower()) >= 0]
-    #
-    # if from_price:
-    #     products = [p for p in products if p['price'] >= float(from_price)]
-    #
-    # if to_price:
-    #     products = [p for p in products if p['price'] <= float(to_price)]
+
     products = product.query.filter(product.active.__eq__(True))
 
     if cate_id :
@@ -113,17 +101,13 @@ def add_reipt(cart):
 
 
 def category_stats():
-    '''
-    select c.id,c.name count(p.id)
-    from category c left outer join product p on p.category_id=c.id
-    group by c.id,c.name
 
-    '''
     with app.app_context():
     #     return category.query.join(product,product.category_id.__eq__(category.id),isouter=True).add_columns(func.count(product.id)).group_by(category.id,category.name).all()
 
         return db.session.query(category.id,category.name,func.count(product.id))\
-            .join(product,category.id.__eq__(product.category_id),isouter=True).group_by(category.id,category.name).all()
+            .join(product,category.id.__eq__(product.category_id),isouter=True)\
+            .group_by(category.id,category.name).all()
 
 def product_stats(kw = None , from_date = None,to_date = None):
     with app.app_context():

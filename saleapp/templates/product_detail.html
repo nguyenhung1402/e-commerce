@@ -5,20 +5,22 @@
 
 {% block content %}
 
-<h1 class="text-center text-info">{{product.name}}</h1>
 
 
 
 
+<hr>
 <div class="row">
     <div class="col-md-5 col-xs-12">
-        <img src="{{ url_for('static', filename=product.image) }}"  alt="{{product.name}}">
+        <img src="{{product.image }} "   class="large-image" alt="{{product.name}}">
 
     </div>
-    <div class="col-md-7 col-xs-12">
-        <h2>{{product.name}}</h2>
+    <div class="col-md-7 col-xs-12 product-details">
+        <h2 class="text-center text-black-50">{{product.name}}</h2>
         <p>{{product.description}}</p>
-        <h4>{{"{:,.1f}".format(product.price)}} VND</h4>
+        <h4>{{"{:,.0f}".format(product.price)}} VND</h4>
+        <a href="#" class="btn btn-primary"
+           onclick="addToCart({{product.id}},'{{product.name}}',{{product.price}})">Dat hang</a>
     </div>
 
 </div>
@@ -33,7 +35,7 @@
     </div>
     <input type="button"
            onclick="addComment({{product.id}})"
-           class="btn btn-primary"
+           class="btn btn-success"
            value="Binh luan"/>
 </div>
 
@@ -55,6 +57,7 @@
         </div>
 
         <div class="col-md-11 col-xs-8">
+            <p>{{c.comment_user.name}}</p>
             <p>{{ c.content }}</p>
             <p><em class="my-date">{{ c.created_date }}</em></p>
         </div>

@@ -16,7 +16,9 @@ def home():
     counter = utils.count_products()
     products = utils.load_product(cate_id=cate_id,kw=kw, page=int(page))
 
-    return render_template('index.html',products=products,pages = math.ceil(counter/app.config['PAGE_SIZE']))
+    return render_template('index.html',
+                           products=products,
+                           pages = math.ceil(counter/app.config['PAGE_SIZE']))
 
 @app.route('/products')
 def product_list():
@@ -207,13 +209,13 @@ def add_comment():
 
     try:
         c = utils.add_comment(content=content, product_id=product_id)
-        print('a')
+        # print('a')
     except:
-        print('b')
+        # print('b')
         return {'status': 404, 'err_msg': 'Bi loi!!'}
 
-    print('c')
-    print(c)
+    # print('c')
+    # print(c)
     return {'status': 201, 'comment': {
         'content': c.content,
         'id': c.id,

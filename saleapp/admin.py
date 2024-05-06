@@ -14,19 +14,13 @@ class AuthenticatedModelView(ModelView):
           return current_user.is_authenticated and current_user.user_role == UserRole.ADMIN
 class ProductView(ModelView):
      can_view_details = True
-     # column_labels = {
-     #      'name':'Ten san pham',
-     #      'price':'Gia',
-     #      'image':'Anh dai dien',
-     #      'category_id':'Danh phum',
-     #
-     # }
+
      column_list = [c_attr.key for c_attr in inspect(product).mapper.column_attrs]
      column_hide_backrefs = False
      def is_accessible(self):
           return current_user.is_authenticated and current_user.user_role == UserRole.ADMIN
 class CategoryView(ModelView):
-     column_display_pk = True # optional, but I like to see the IDs in the list
+     column_display_pk = True
      column_hide_backrefs = False
      def is_accessible(self):
           return current_user.is_authenticated and current_user.user_role == UserRole.ADMIN
@@ -67,3 +61,4 @@ admin.add_view(AuthenticatedModelView(category,db.session))
 admin.add_view(ProductView(product,db.session))
 admin.add_view(LogoutView(name='logout'))
 admin.add_view(StatsView(name='Stats'))
+
